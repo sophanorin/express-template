@@ -10,10 +10,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ Post }) {
       // define association here
     }
+    toJSON() {
+      const obj = this.get();
+      return { amount: obj.amount, unit: obj.unit };
+    }
   }
   Quantity.init(
     {
-      quantity: DataTypes.DECIMAL,
+      amount: DataTypes.DECIMAL,
+      unit: DataTypes.STRING,
     },
     {
       sequelize,

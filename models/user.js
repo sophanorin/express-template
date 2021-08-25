@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -7,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ Post, Location }) {
+    static associate() {
       // define association here
     }
     toJSON() {
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       phone_number: DataTypes.STRING,
       username: DataTypes.STRING,
       password: DataTypes.STRING,
+      avatar: DataTypes.STRING,
     },
     {
       modelName: "User",

@@ -41,7 +41,26 @@ Object.keys(db).forEach((modelName) => {
 });
 
 (async () => {
-  await sequelize.sync();
+  await sequelize.sync({ force: true });
+
+  await db.Currency.create({ name: "riel" });
+  await db.Currency.create({ name: "dollar" });
+  await db.Category.create({ category: "rice" });
+  await db.Category.create({ category: "noodle" });
+  await db.User.create({
+    name: "admin",
+    gender: "male",
+    phone_number: "0123456789",
+    username: "admin",
+    password: "admin",
+  });
+  await db.User.create({
+    name: "customer",
+    gender: "male",
+    phone_number: "0123456789",
+    username: "customer",
+    password: "customer",
+  });
 })();
 
 db.sequelize = sequelize;

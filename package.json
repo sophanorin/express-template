@@ -5,17 +5,21 @@
   "main": "index.js",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cloudinary": "^1.26.3",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.3",
     "mysql2": "^2.3.0",
     "nodemon": "^2.0.6",
     "sequelize": "^6.6.5"
   },
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "heroku-postbuild": "npm install && exec start"
   },
   "author": "",
   "license": "ISC"

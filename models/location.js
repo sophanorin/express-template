@@ -8,7 +8,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate({ User, Post }) {}
+
+    toJSON() {
+      return this.get().location;
+    }
   }
+
   Location.init(
     {
       location: DataTypes.STRING,

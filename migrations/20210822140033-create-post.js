@@ -11,8 +11,12 @@ module.exports = {
       description: {
         type: Sequelize.TEXT,
       },
-      price: {
-        type: Sequelize.DECIMAL,
+      price_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Prices",
+          key: "id",
+        },
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -53,6 +57,11 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("Prices");
+    await queryInterface.dropTable("Categories");
+    await queryInterface.dropTable("Locations");
+    await queryInterface.dropTable("Quantities");
     await queryInterface.dropTable("Posts");
   },
 };

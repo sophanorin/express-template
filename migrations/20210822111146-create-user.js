@@ -48,6 +48,10 @@ module.exports = {
           msg: "Your password must be strong",
         },
       },
+      avatar: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

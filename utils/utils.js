@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const cloudinary = require("./cloudinary");
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -8,6 +9,7 @@ const generateToken = (user) => {
       gender: user.gender,
       phone_number: user.phone_number,
       username: user.username,
+      avatar: user.avatar,
     },
     process.env.JWT_SECRET || "somethingsecret",
     { expiresIn: "30d" }
@@ -29,7 +31,23 @@ const isAuth = (req, res, next) => {
         }
       }
     );
-  } else res.status(401).send({ message: "No token" });
+  } else res.status(401).send({ message: "Unauthorization" });
 };
 
-module.exports = { generateToken, isAuth };
+/**
+ *
+ * @param {string} file
+ * @returns {string} { secure_url }
+ */
+const cloudinaryImageUploadMethod = async (file) => {
+  return new Promise((resolve) => {
+    cloudinary.uploader.upload(file, (err, res) => {
+      if (err) return res.status(500).send("upload image error");
+      resolve({
+        url: res.secure_url,
+      });
+    });
+  });
+};
+
+module.exports = { generateToken, isAuth, cloudinaryImageUploadMethod };

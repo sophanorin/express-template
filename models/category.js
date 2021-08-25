@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ Post }) {
       // define association here
     }
+    toJSON() {
+      return this.get().category;
+    }
   }
   Category.init(
     {
