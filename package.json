@@ -6,6 +6,11 @@
   "engines": {
     "node": "16.4.0"
   },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.26.3",
@@ -21,8 +26,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "heroku-postbuild": "npm install && npm start"
+    "dev": "nodemon server.js"
   },
   "author": "",
   "license": "ISC"
