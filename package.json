@@ -22,7 +22,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "heroku-postbuild": "npm install && exec start"
+    "heroku-postbuild": "npm install && npm start"
   },
   "author": "",
   "license": "ISC"
