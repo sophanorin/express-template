@@ -1,8 +1,11 @@
 {
-  "name": "instagram-clone",
+  "name": "krm-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
+  "engines": {
+    "node": "16.4.0"
+  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.26.3",
