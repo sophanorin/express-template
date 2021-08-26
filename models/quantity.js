@@ -27,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       unitId: DataTypes.INTEGER,
     },
     {
+      charset: "utf8",
+      collate: "utf8_general_ci",
       sequelize,
       modelName: "Quantity",
     }

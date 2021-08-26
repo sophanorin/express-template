@@ -22,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       currencyId: DataTypes.INTEGER,
     },
     {
+      charset: "utf8",
+      collate: "utf8_general_ci",
       sequelize,
       modelName: "Price",
     }

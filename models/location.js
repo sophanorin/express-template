@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       location: DataTypes.STRING,
     },
     {
+      charset: "utf8",
+      collate: "utf8_general_ci",
       sequelize,
       modelName: "Location",
     }

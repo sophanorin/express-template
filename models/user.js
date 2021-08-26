@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       avatar: DataTypes.STRING,
     },
     {
+      charset: "utf8",
+      collate: "utf8_general_ci",
       modelName: "User",
       sequelize,
     }

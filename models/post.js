@@ -35,6 +35,8 @@ module.exports = (sequelize, DataTypes) => {
       categoryId: DataTypes.INTEGER,
     },
     {
+      charset: "utf8",
+      collate: "utf8_general_ci",
       sequelize,
       modelName: "Post",
     }

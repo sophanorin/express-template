@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       url: DataTypes.STRING,
     },
     {
+      charset: "utf8",
+      collate: "utf8_general_ci",
       sequelize,
       modelName: "Image",
     }

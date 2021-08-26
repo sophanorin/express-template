@@ -25,7 +25,7 @@ module.exports = {
           type: Sequelize.DATE,
         },
       },
-      { timestamp: false }
+      { charset: "utf8", collate: "utf8_general_ci", timestamp: false }
     );
   },
   down: async (queryInterface, Sequelize) => {
