@@ -43,23 +43,21 @@ Object.keys(db).forEach((modelName) => {
 (async () => {
   await sequelize.sync({ force: true });
 
-  await db.Currency.create({ name: "riel" });
-  await db.Currency.create({ name: "dollar" });
-  await db.Category.create({ category: "rice" });
-  await db.Category.create({ category: "noodle" });
+  await db.Unit.create({ name_en: "Tons", name_kh: "តោន" });
+  await db.Unit.create({ name_en: "Kg", name_kh: "គីឡូក្រាម" });
+  await db.Unit.create({ name_en: "G", name_kh: "ក្រាម" });
+  await db.Unit.create({ name_en: "Ml", name_kh: "មីលីក្រាម" });
+
+  await db.Currency.create({ name_en: "riel", name_kh: "រៀល" });
+  await db.Currency.create({ name_en: "dollar", name_kh: "ដុល្លារ" });
+  await db.Category.create({ name_en: "rice", name_kh: "អង្ករ" });
+  await db.Category.create({ name_en: "unhusked rice", name_kh: "ស្រូវ" });
   await db.User.create({
     name: "admin",
     gender: "male",
     phone_number: "0123456789",
     username: "admin",
-    password: "admin",
-  });
-  await db.User.create({
-    name: "customer",
-    gender: "male",
-    phone_number: "0123456789",
-    username: "customer",
-    password: "customer",
+    password: "$2b$08$51Em7HvDPjC4teFipBjND.6IX2lVCkOHVhWYiVrnV1Z1RsK1zc7EW",
   });
 })();
 

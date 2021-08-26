@@ -7,18 +7,24 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ Post }) {
+    static associate({ Unit }) {
       // define association here
+      this.belongsTo(Unit, { as: "unit" });
     }
     toJSON() {
       const obj = this.get();
-      return { amount: obj.amount, unit: obj.unit };
+      return {
+        ...obj,
+        unitId: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+      };
     }
   }
   Quantity.init(
     {
       amount: DataTypes.DECIMAL,
-      unit: DataTypes.STRING,
+      unitId: DataTypes.INTEGER,
     },
     {
       sequelize,

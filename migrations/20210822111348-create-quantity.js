@@ -11,8 +11,12 @@ module.exports = {
       amount: {
         type: Sequelize.DECIMAL,
       },
-      unit: {
-        type: Sequelize.STRING,
+      unitId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Units",
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,

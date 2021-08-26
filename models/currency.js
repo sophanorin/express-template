@@ -11,12 +11,13 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
     toJSON() {
-      return this.get().name;
+      return { ...this.get() };
     }
   }
   Currency.init(
     {
-      name: DataTypes.STRING,
+      name_kh: DataTypes.STRING,
+      name_en: DataTypes.STRING,
     },
     {
       sequelize,

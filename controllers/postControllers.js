@@ -8,6 +8,7 @@ const {
   Image,
   User,
   Price,
+  Unit,
   Currency,
 } = require("../models");
 
@@ -20,9 +21,8 @@ exports.updatePost = expressAsyncsHandler(async (req, res, next) => {
     currencyId,
     categoryId,
     quantity,
-    unit,
+    unitId,
     location,
-    userId,
   } = req.body;
 
   if (id) {
@@ -35,7 +35,11 @@ exports.updatePost = expressAsyncsHandler(async (req, res, next) => {
             as: "price",
             include: [{ model: Currency, as: "currency" }],
           },
-          { model: Quantity, as: "quantity" },
+          {
+            model: Quantity,
+            as: "quantity",
+            include: [{ model: Unit, as: "unit" }],
+          },
           { model: Category, as: "category" },
           { model: Location, as: "location" },
           { model: Image, as: "images" },
@@ -60,7 +64,8 @@ exports.updatePost = expressAsyncsHandler(async (req, res, next) => {
         post.category.update(categoryId);
       }
 
-      if (quantity || unit) post.quantity.update({ amount: quantity, unit });
+      if (quantity || unitId)
+        post.quantity.update({ amount: quantity, unitId });
 
       if (location) post.location.update({ location });
 
@@ -94,7 +99,7 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
     currencyId,
     categoryId,
     quantity,
-    unit,
+    unitId,
     location,
     userId,
   } = req.body;
@@ -119,7 +124,7 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
         },
         quantity: {
           amount: quantity,
-          unit,
+          unitId,
         },
         location: {
           location,
@@ -133,7 +138,11 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
             as: "price",
             include: [{ model: Currency, as: "currency" }],
           },
-          { model: Quantity, as: "quantity" },
+          {
+            model: Quantity,
+            as: "quantity",
+            include: [{ model: Unit, as: "unit" }],
+          },
           { model: Category, as: "category" },
           { model: Location, as: "location" },
           { model: Image, as: "images" },
@@ -150,7 +159,11 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
           as: "price",
           include: [{ model: Currency, as: "currency" }],
         },
-        { model: Quantity, as: "quantity" },
+        {
+          model: Quantity,
+          as: "quantity",
+          include: [{ model: Unit, as: "unit" }],
+        },
         { model: Category, as: "category" },
         { model: Location, as: "location" },
         { model: Image, as: "images" },
@@ -173,7 +186,11 @@ exports.getPosts = expressAsyncsHandler(async (req, res, next) => {
           as: "price",
           include: [{ model: Currency, as: "currency" }],
         },
-        { model: Quantity, as: "quantity" },
+        {
+          model: Quantity,
+          as: "quantity",
+          include: [{ model: Unit, as: "unit" }],
+        },
         { model: Category, as: "category" },
         { model: Location, as: "location" },
         { model: Image, as: "images" },
@@ -198,7 +215,11 @@ exports.getPostById = expressAsyncsHandler(async (req, res, next) => {
           as: "price",
           include: [{ model: Currency, as: "currency" }],
         },
-        { model: Quantity, as: "quantity" },
+        {
+          model: Quantity,
+          as: "quantity",
+          include: [{ model: Unit, as: "unit" }],
+        },
         { model: Category, as: "category" },
         { model: Location, as: "location" },
         { model: Image, as: "images" },
