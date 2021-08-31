@@ -58,7 +58,7 @@ exports.signup = expressAsyncsHandler(async (req, res) => {
     res.json({
       id: user.id,
       name: user.name,
-      email: user.gender,
+      gender: user.gender,
       phone_number: user.phone_number,
       username: user.username,
       password: user.password,
