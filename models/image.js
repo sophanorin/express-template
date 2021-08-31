@@ -9,15 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ Post }) {
       // define association here
-      this.belongsTo(Post, { as: "images" });
     }
     toJSON() {
-      const { id, url, createdAt, updatedAt } = this.get();
-      return { id, url, createdAt, updatedAt };
+      const { id, publicId, url, createdAt, updatedAt } = this.get();
+      return { id, url, publicId, createdAt, updatedAt };
     }
   }
   Image.init(
     {
+      publicId: DataTypes.STRING,
       url: DataTypes.STRING,
     },
     {

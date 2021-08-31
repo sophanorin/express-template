@@ -17,6 +17,9 @@ module.exports = {
             key: "id",
           },
         },
+        publicId: {
+          type: Sequelize.STRING,
+        },
         url: {
           type: Sequelize.STRING,
         },

@@ -13,6 +13,7 @@ module.exports = {
         name: {
           type: Sequelize.STRING,
           allowNull: false,
+          unique: true,
           validate: {
             notNull: { msg: "User must have a name" },
             notEmpty: { msg: "name must not be empty" },
@@ -29,6 +30,7 @@ module.exports = {
         phone_number: {
           type: Sequelize.STRING,
           allowNull: false,
+          unique: true,
           validate: {
             notNull: { msg: "User must have a phone_number" },
             notEmpty: { msg: "phone_number must not be empty" },
@@ -37,6 +39,7 @@ module.exports = {
         username: {
           type: Sequelize.STRING,
           allowNull: false,
+          unique: true,
           validate: {
             notNull: { msg: "username must have a phone_number" },
             notEmpty: { msg: "username must not be empty" },
@@ -50,9 +53,12 @@ module.exports = {
             msg: "Your password must be strong",
           },
         },
-        avatar: {
-          type: Sequelize.STRING,
-          allowNull: false,
+        avatarId: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: "Avatars",
+            key: "id",
+          },
         },
         createdAt: {
           allowNull: false,

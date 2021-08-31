@@ -109,8 +109,8 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
 
     for (const file of req.files) {
       const { path } = file;
-      const url = await cloudinaryImageUploadMethod(path);
-      urls.push(url);
+      const res = await cloudinaryImageUploadMethod(path);
+      urls.push(res);
     }
 
     const result = await Post.create(

@@ -37,17 +37,41 @@ const isAuth = (req, res, next) => {
 /**
  *
  * @param {string} file
- * @returns {string} { secure_url }
+ * @returns {Object} { secure_url as url, public_id as publicId }
  */
 const cloudinaryImageUploadMethod = async (file) => {
   return new Promise((resolve) => {
     cloudinary.uploader.upload(file, (err, res) => {
       if (err) return res.status(500).send("upload image error");
+
       resolve({
         url: res.secure_url,
+        publicId: res.public_id,
       });
     });
   });
 };
 
-module.exports = { generateToken, isAuth, cloudinaryImageUploadMethod };
+/**
+ *
+ * @param {string} public_id
+ * @returns {Object} { secure_url as url, public_id as publicId }
+ */
+const cloudinaryImageDestroyMethod = async (public_id) => {
+  return new Promise((resolve) => {
+    cloudinary.uploader.destroy(public_id, (err, res) => {
+      if (err) return res.status(500).send("upload image error");
+
+      console.log();
+
+      resolve(res);
+    });
+  });
+};
+
+module.exports = {
+  generateToken,
+  isAuth,
+  cloudinaryImageUploadMethod,
+  cloudinaryImageDestroyMethod,
+};

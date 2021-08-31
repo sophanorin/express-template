@@ -6,6 +6,12 @@ const { isAuth } = require("../utils/utils");
 const userRouter = express.Router();
 
 userRouter.get("/getUserPosts/:id", isAuth, userControllers.getUserPosts);
+userRouter.get("/getUser/:id", isAuth, userControllers.getUser);
+userRouter.post(
+  "/updateUser/:id",
+  upload.single("avatar"),
+  userControllers.updateUser
+);
 userRouter.post("/signup", upload.single("avatar"), userControllers.signup);
 userRouter.post("/signin", userControllers.signin);
 
