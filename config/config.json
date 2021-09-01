@@ -10,14 +10,14 @@
     "username": "sql10432848",
     "password": "KYdB2dTJ97",
     "database": "sql10432848",
-    "host": "sql10.freemysqlhosting.net",
+    "host": "db4free.net",
     "dialect": "mysql"
   },
   "production": {
     "username": "sql10432848",
     "password": "KYdB2dTJ97",
     "database": "sql10432848",
-    "host": "sql10.freemysqlhosting.net",
+    "host": "db4free.net",
     "dialect": "mysql"
   }
 }
