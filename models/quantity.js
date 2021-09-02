@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ Unit }) {
       // define association here
-      this.belongsTo(Unit, { as: "unit" });
+      this.belongsTo(Unit, { as: "unit", targetKey: "id" });
     }
     toJSON() {
       const obj = this.get();

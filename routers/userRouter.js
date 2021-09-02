@@ -10,8 +10,12 @@ userRouter.get("/getUser/:id", isAuth, userControllers.getUser);
 userRouter.post(
   "/updateUser/:id",
   upload.single("avatar"),
+  isAuth,
   userControllers.updateUser
 );
+
+userRouter.post("/changePassword/:userId", userControllers.changPassword);
+
 userRouter.post("/signup", upload.single("avatar"), userControllers.signup);
 userRouter.post("/signin", userControllers.signin);
 

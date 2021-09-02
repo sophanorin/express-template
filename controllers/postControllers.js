@@ -1,5 +1,6 @@
 const expressAsyncsHandler = require("express-async-handler");
 const { cloudinaryImageUploadMethod } = require("../utils/utils");
+const { Op } = require("sequelize");
 const {
   Post,
   Quantity,
@@ -10,6 +11,8 @@ const {
   Price,
   Unit,
   Currency,
+  PostType,
+  sequelize,
 } = require("../models");
 
 exports.updatePost = expressAsyncsHandler(async (req, res, next) => {
@@ -18,6 +21,7 @@ exports.updatePost = expressAsyncsHandler(async (req, res, next) => {
   const {
     description,
     price: amount,
+    postTypeId,
     currencyId,
     categoryId,
     quantity,
@@ -40,6 +44,7 @@ exports.updatePost = expressAsyncsHandler(async (req, res, next) => {
             as: "quantity",
             include: [{ model: Unit, as: "unit" }],
           },
+          { model: PostType, as: "postType" },
           { model: Category, as: "category" },
           { model: Location, as: "location" },
           { model: Image, as: "images" },
@@ -63,6 +68,8 @@ exports.updatePost = expressAsyncsHandler(async (req, res, next) => {
       if (categoryId) {
         post.category.update(categoryId);
       }
+
+      if (postTypeId) post.postType.update({ postTypeId });
 
       if (quantity || unitId)
         post.quantity.update({ amount: quantity, unitId });
@@ -98,40 +105,68 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
     price: amount,
     currencyId,
     categoryId,
+    postTypeId,
     quantity,
     unitId,
     location,
     userId,
   } = req.body;
 
-  try {
-    let urls = [];
+  let urls = [];
 
-    for (const file of req.files) {
-      const { path } = file;
-      const res = await cloudinaryImageUploadMethod(path);
-      urls.push(res);
-    }
+  for (const file of req.files) {
+    const { path } = file;
+    const res = await cloudinaryImageUploadMethod(path);
+    urls.push(res);
+  }
 
-    const result = await Post.create(
-      {
-        description,
-        userId,
-        categoryId,
-        price: {
-          amount,
-          currencyId,
-        },
-        quantity: {
-          amount: quantity,
-          unitId,
-        },
-        location: {
-          location,
-        },
-        images: [...urls],
+  Post.create(
+    {
+      description,
+      userId,
+      categoryId,
+      postTypeId,
+      price: {
+        amount,
+        currencyId,
       },
-      {
+      quantity: {
+        amount: quantity,
+        unitId,
+      },
+      location: {
+        location,
+      },
+      images: [...urls],
+    },
+    {
+      include: [
+        {
+          model: Price,
+          as: "price",
+          include: [
+            {
+              model: Currency,
+              as: "currency",
+            },
+          ],
+        },
+        {
+          model: Quantity,
+          as: "quantity",
+          include: [{ model: Unit, as: "unit" }],
+        },
+        { model: PostType, as: "postType" },
+        { model: Category, as: "category" },
+        { model: Location, as: "location" },
+        { model: Image, as: "images" },
+        { model: User, as: "user" },
+      ],
+    }
+  )
+    .then((post) => {
+      Post.findOne({
+        where: { id: post.id },
         include: [
           {
             model: Price,
@@ -144,42 +179,22 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
             include: [{ model: Unit, as: "unit" }],
           },
           { model: Category, as: "category" },
+          { model: PostType, as: "postType" },
           { model: Location, as: "location" },
           { model: Image, as: "images" },
           { model: User, as: "user" },
         ],
-      }
-    );
-
-    const post = await Post.findOne({
-      where: { id: result.id },
-      include: [
-        {
-          model: Price,
-          as: "price",
-          include: [{ model: Currency, as: "currency" }],
-        },
-        {
-          model: Quantity,
-          as: "quantity",
-          include: [{ model: Unit, as: "unit" }],
-        },
-        { model: Category, as: "category" },
-        { model: Location, as: "location" },
-        { model: Image, as: "images" },
-        { model: User, as: "user" },
-      ],
-    });
-
-    res.json(post);
-  } catch (error) {
-    res.status(422).send({ error: err });
-  }
+      }).then((post) => res.json(post));
+    })
+    .catch((err) => res.status(500).json({ message: err }));
 });
 
 exports.getPosts = expressAsyncsHandler(async (req, res, next) => {
-  try {
-    const posts = await Post.findAll({
+  const postType = req.params.postType;
+  var collect_posts = [];
+
+  if (postType) {
+    Post.findAll({
       include: [
         {
           model: Price,
@@ -191,17 +206,43 @@ exports.getPosts = expressAsyncsHandler(async (req, res, next) => {
           as: "quantity",
           include: [{ model: Unit, as: "unit" }],
         },
+        { model: PostType, as: "postType", where: { name_en: postType } },
         { model: Category, as: "category" },
         { model: Location, as: "location" },
         { model: Image, as: "images" },
         { model: User, as: "user" },
       ],
-    });
-
-    res.json(posts);
-  } catch (error) {
-    res.status(422).send({ error: err });
+    })
+      .then((posts) => {
+        res.json({ post_count: posts.length, posts });
+      })
+      .catch((err) => res.status(500).json({ message: err }));
+  } else {
+    Post.findAll({
+      include: [
+        {
+          model: Price,
+          as: "price",
+          include: [{ model: Currency, as: "currency" }],
+        },
+        {
+          model: Quantity,
+          as: "quantity",
+          include: [{ model: Unit, as: "unit" }],
+        },
+        { model: PostType, as: "postType" },
+        { model: Category, as: "category" },
+        { model: Location, as: "location" },
+        { model: Image, as: "images" },
+        { model: User, as: "user" },
+      ],
+    })
+      .then((posts) => {
+        res.json({ post_count: posts.length, posts });
+      })
+      .catch((err) => res.status(500).json({ message: err }));
   }
+  // res.json({ post_count: collect_posts.length, posts: collect_posts });
 });
 
 exports.getPostById = expressAsyncsHandler(async (req, res, next) => {
@@ -220,6 +261,7 @@ exports.getPostById = expressAsyncsHandler(async (req, res, next) => {
           as: "quantity",
           include: [{ model: Unit, as: "unit" }],
         },
+        { model: PostType, as: "postType" },
         { model: Category, as: "category" },
         { model: Location, as: "location" },
         { model: Image, as: "images" },

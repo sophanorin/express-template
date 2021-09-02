@@ -1,35 +1,29 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Currency extends Model {
+  class PostType extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({ Post }) {
       // define association here
+      //this.hasMany(Post, { as: "posts", foreignKey: "postTypeId" });
     }
     toJSON() {
-      return {
-        ...this.get(),
-        currencyId: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
-      };
+      return { ...this.get(), createdAt: undefined, updatedAt: undefined };
     }
   }
-  Currency.init(
+  PostType.init(
     {
       name_kh: DataTypes.STRING,
       name_en: DataTypes.STRING,
     },
     {
-      charset: "utf8",
-      collate: "utf8_general_ci",
       sequelize,
-      modelName: "Currency",
+      modelName: "PostType",
     }
   );
-  return Currency;
+  return PostType;
 };

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
     toJSON() {
-      return { ...this.get() };
+      return { ...this.get(), createdAt: undefined, updatedAt: undefined };
     }
   }
   Category.init(

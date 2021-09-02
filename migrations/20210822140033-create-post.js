@@ -13,38 +13,45 @@ module.exports = {
         description: {
           type: Sequelize.TEXT,
         },
-        price_id: {
+        priceId: {
           type: Sequelize.INTEGER,
           references: {
             model: "Prices",
             key: "id",
           },
         },
-        user_id: {
+        userId: {
           type: Sequelize.INTEGER,
           references: {
             model: "Users",
             key: "id",
           },
         },
-        quantity_id: {
+        quantityId: {
           type: Sequelize.INTEGER,
           references: {
             model: "Quantities",
             key: "id",
           },
         },
-        category_id: {
+        categoryId: {
           type: Sequelize.INTEGER,
           references: {
             model: "Categories",
             key: "id",
           },
         },
-        location_id: {
+        locationId: {
           type: Sequelize.INTEGER,
           references: {
             model: "Locations",
+            key: "id",
+          },
+        },
+        postTypeId: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: "PostTypes",
             key: "id",
           },
         },
@@ -57,15 +64,20 @@ module.exports = {
           type: Sequelize.DATE,
         },
       },
-      { charset: "utf8", collate: "utf8_general_ci", timestamp: false }
+      {
+        charset: "utf8",
+        collate: "utf8_general_ci",
+        timestamp: false,
+        updatedAt: false,
+      }
     );
   },
   down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("Posts");
     await queryInterface.dropTable("Users");
     await queryInterface.dropTable("Prices");
     await queryInterface.dropTable("Categories");
     await queryInterface.dropTable("Locations");
     await queryInterface.dropTable("Quantities");
-    await queryInterface.dropTable("Posts");
   },
 };

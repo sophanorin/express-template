@@ -12,7 +12,7 @@ postRouter.post(
   postControllers.insertPost
 );
 postRouter.put("/updatePost/:id", isAuth, postControllers.updatePost);
-postRouter.get("/getPosts", postControllers.getPosts);
+postRouter.get("/getPosts/:postType?", postControllers.getPosts);
 postRouter.get("/getPost/:id", postControllers.getPostById);
 postRouter.delete(
   "/deletePostById/:id",

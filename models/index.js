@@ -41,24 +41,25 @@ Object.keys(db).forEach((modelName) => {
 });
 
 (async () => {
-  await sequelize.sync({ force: true });
-
-  await db.Unit.create({ name_en: "Tons", name_kh: "តោន" });
-  await db.Unit.create({ name_en: "Kg", name_kh: "គីឡូក្រាម" });
-  await db.Unit.create({ name_en: "G", name_kh: "ក្រាម" });
-  await db.Unit.create({ name_en: "Ml", name_kh: "មីលីក្រាម" });
-
-  await db.Currency.create({ name_en: "riel", name_kh: "រៀល" });
-  await db.Currency.create({ name_en: "dollar", name_kh: "ដុល្លារ" });
-  await db.Category.create({ name_en: "rice", name_kh: "អង្ករ" });
-  await db.Category.create({ name_en: "unhusked rice", name_kh: "ស្រូវ" });
-  await db.User.create({
-    name: "admin",
-    gender: "male",
-    phone_number: "0123456789",
-    username: "admin",
-    password: "$2b$08$51Em7HvDPjC4teFipBjND.6IX2lVCkOHVhWYiVrnV1Z1RsK1zc7EW",
-  });
+  // await sequelize.sync({ force: true });
+  // await db.PostType.create({ name_en: "Sell", name_kh: "លក់" });
+  // await db.PostType.create({ name_en: "Buy", name_kh: "ទិញ" });
+  // await db.Unit.create({ name_en: "Tons", name_kh: "តោន" });
+  // await db.Unit.create({ name_en: "Kg", name_kh: "គីឡូក្រាម" });
+  // await db.Unit.create({ name_en: "G", name_kh: "ក្រាម" });
+  // await db.Unit.create({ name_en: "Ml", name_kh: "មីលីក្រាម" });
+  // await db.Currency.create({ name_en: "riel", name_kh: "រៀល" });
+  // await db.Currency.create({ name_en: "dollar", name_kh: "ដុល្លារ" });
+  // await db.Category.create({ name_en: "rice", name_kh: "អង្ករ" });
+  // await db.Category.create({ name_en: "unhusked rice", name_kh: "ស្រូវ" });
+  // await db.User.create({
+  //   first_name: "Sophanorin",
+  //   last_name: "Hoeu",
+  //   gender: "male",
+  //   phone_number: "0123456789",
+  //   username: "admin",
+  //   password: "$2b$08$/yn1sjxC1wdkBvqMN02/PukQdb6wgjYjuXSYGRvggjGdeYYtAQ2XC",
+  // });
 })();
 
 db.sequelize = sequelize;

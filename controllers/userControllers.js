@@ -4,8 +4,8 @@ const {
   cloudinaryImageUploadMethod,
   cloudinaryImageDestroyMethod,
 } = require("../utils/utils.js");
-const cloudinary = require("../utils/cloudinary");
 const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
 const {
   Post,
   Quantity,
@@ -17,77 +17,105 @@ const {
   Unit,
   Currency,
   Avatar,
+  PostType,
   Sequelize,
 } = require("../models");
 
 exports.signup = expressAsyncsHandler(async (req, res) => {
-  const { name, gender, phone_number, username, password } = req.body;
+  const { first_name, last_name, gender, phone_number, username, password } =
+    req.body;
 
   let cloudinary_res;
   if (req.file)
     cloudinary_res = await cloudinaryImageUploadMethod(req.file.path);
 
-  try {
-    let user;
-
-    if (cloudinary_res) {
-      user = await User.create(
-        {
-          name,
-          gender,
-          phone_number,
-          username,
-          avatar: cloudinary_res,
-          password: bcrypt.hashSync(password, 8),
-        },
-        { include: [{ model: Avatar, as: "avatar" }] }
-      );
-    }
-
-    user = await User.create(
+  if (cloudinary_res) {
+    User.create(
       {
-        name,
+        first_name,
+        last_name,
         gender,
         phone_number,
         username,
+        avatar: cloudinary_res,
         password: bcrypt.hashSync(password, 8),
       },
       { include: [{ model: Avatar, as: "avatar" }] }
-    );
-
-    res.json({
-      id: user.id,
-      name: user.name,
-      gender: user.gender,
-      phone_number: user.phone_number,
-      username: user.username,
-      password: user.password,
-      avatar: user.avatar,
-      token: generateToken(user),
-    });
-  } catch (error) {
-    res.status(422).send({ error: err });
+    )
+      .then((user) => {
+        res.json({
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          gender: user.gender,
+          phone_number: user.phone_number,
+          username: user.username,
+          password: user.password,
+          avatar: user.avatar,
+          token: generateToken(user),
+        });
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  } else {
+    User.create(
+      {
+        first_name,
+        last_name,
+        gender,
+        phone_number,
+        username,
+        avatar: null,
+        password: bcrypt.hashSync(password, 8),
+      },
+      { include: [{ model: Avatar, as: "avatar" }] }
+    )
+      .then((user) => {
+        res.json({
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          gender: user.gender,
+          phone_number: user.phone_number,
+          username: user.username,
+          password: user.password,
+          avatar: user.avatar,
+          token: generateToken(user),
+        });
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
   }
 });
 
 exports.signin = expressAsyncsHandler(async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ where: { username } });
-
-  const user_post = await Post.findAll({
-    where: { userId: user.id },
+  const { username, phone_number, password } = req.body;
+  const user = await User.findOne({
+    where: {
+      [Op.or]: [
+        { username: username || "" },
+        { phone_number: phone_number || "" },
+      ],
+    },
+    include: [
+      { model: Avatar, as: "avatar" },
+      { model: Post, as: "posts" },
+    ],
   });
 
   if (user) {
     if (bcrypt.compareSync(password, user.password)) {
       res.send({
         id: user.id,
-        name: user.name,
+        first_name: user.first_name,
+        last_name: user.last_name,
         gender: user.gender,
         phone_number: user.phone_number,
         avatar: user.avatar,
         token: generateToken(user),
-        posts_count: user_post.length,
+        posts_count: user.posts.length,
       });
       return;
     }
@@ -113,6 +141,7 @@ exports.getUserPosts = expressAsyncsHandler(async (req, res) => {
             as: "quantity",
             include: [{ model: Unit, as: "unit" }],
           },
+          { model: PostType, as: "postType" },
           { model: Category, as: "category" },
           { model: Location, as: "location" },
           { model: Image, as: "images" },
@@ -129,15 +158,23 @@ exports.getUserPosts = expressAsyncsHandler(async (req, res) => {
 
 exports.getUser = expressAsyncsHandler(async (req, res) => {
   const user = await User.findByPk(req.params.id, {
-    include: { model: Avatar, as: "avatar" },
+    include: [
+      { model: Avatar, as: "avatar" },
+      { model: Post, as: "posts" },
+    ],
   });
-  if (user) res.send(user);
-  else res.status(404).send({ message: "User Not Found" });
+  if (user) {
+    const _user = { ...user.get() };
+    _user.post_count = _user.posts.length;
+    _user.posts = undefined;
+    _user.avatarId = undefined;
+    res.json(_user);
+  } else res.status(404).send({ message: "User Not Found" });
 });
 
 exports.updateUser = expressAsyncsHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, gender, phone_number } = req.body;
+  const { first_name, last_name, gender, phone_number } = req.body;
   const user = await User.findByPk(id, {
     include: { model: Avatar, as: "avatar" },
   });
@@ -169,7 +206,8 @@ exports.updateUser = expressAsyncsHandler(async (req, res) => {
       user.avatar = null;
     }
 
-    user.name = name;
+    user.first_name = first_name;
+    user.last_name = last_name;
     user.gender = gender;
     user.phone_number = phone_number;
 
@@ -182,4 +220,44 @@ exports.updateUser = expressAsyncsHandler(async (req, res) => {
 
     res.json(new_user);
   }
+});
+
+exports.changPassword = expressAsyncsHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { oldPassword, newPassword, confirmNewPassword } = req.body;
+
+  User.findOne({
+    where: { id: userId },
+    include: [{ model: Avatar, as: "avatar" }],
+  })
+    .then((user) => {
+      if (bcrypt.compareSync(oldPassword, user.password)) {
+        if (newPassword === confirmNewPassword) {
+          const new_pas = bcrypt.hashSync(confirmNewPassword, 8);
+          user.password = new_pas;
+          user.save();
+
+          const hot_user = { ...user.get(), password: new_pas };
+
+          res.json({
+            ...user.get(),
+            token: generateToken(hot_user),
+            password: undefined,
+          });
+        } else {
+          res.status(500).json({
+            message: "New passwords doesn't match",
+            password: { status: "newPassword", data: false },
+          });
+        }
+      } else {
+        res.status(500).json({
+          message: "Current passwords doesn't match",
+          password: { status: "oldPassword", data: false },
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err });
+    });
 });

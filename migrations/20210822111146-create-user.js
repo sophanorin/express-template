@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const User = await queryInterface.createTable(
+    await queryInterface.createTable(
       "Users",
       {
         id: {
@@ -10,7 +10,16 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.INTEGER,
         },
-        name: {
+        first_name: {
+          type: Sequelize.STRING,
+          allowNull: false,
+          unique: true,
+          validate: {
+            notNull: { msg: "User must have a name" },
+            notEmpty: { msg: "name must not be empty" },
+          },
+        },
+        last_name: {
           type: Sequelize.STRING,
           allowNull: false,
           unique: true,
@@ -36,6 +45,13 @@ module.exports = {
             notEmpty: { msg: "phone_number must not be empty" },
           },
         },
+        avatarId: {
+          references: {
+            model: "Avatars",
+            key: "id",
+          },
+          type: Sequelize.INTEGER,
+        },
         username: {
           type: Sequelize.STRING,
           allowNull: false,
@@ -51,13 +67,6 @@ module.exports = {
           is: {
             args: /^[0-9a-f]{64}$/i,
             msg: "Your password must be strong",
-          },
-        },
-        avatarId: {
-          type: Sequelize.INTEGER,
-          references: {
-            model: "Avatars",
-            key: "id",
           },
         },
         createdAt: {
