@@ -20,6 +20,7 @@ app.use("/api/user", require("./routers/userRouter"));
 app.use("/api/category", require("./routers/categoryRouter"));
 app.use("/api/currency", require("./routers/currencyRouter"));
 app.use("/api/unit", require("./routers/unitRouter"));
+app.use("/api/postType", require("./routers/PostTypeRouter"));
 
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });
