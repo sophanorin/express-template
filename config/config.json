@@ -14,10 +14,11 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "sql10432848",
-    "password": "KYdB2dTJ97",
-    "database": "sql10432848",
-    "host": "db4free.net",
+    "username": "admin",
+    "password": "Hq0oYXsj",
+    "database": "krm-app",
+    "host": "mysql-48807-0.cloudclusters.net",
+    "port": 19698,
     "dialect": "mysql"
   }
 }

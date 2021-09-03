@@ -190,10 +190,11 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
 });
 
 exports.getPosts = expressAsyncsHandler(async (req, res, next) => {
-  const postType = req.params.postType;
+  const postTypeId = req.query.postTypeId;
+
   var collect_posts = [];
 
-  if (postType) {
+  if (postTypeId) {
     Post.findAll({
       include: [
         {
@@ -206,7 +207,7 @@ exports.getPosts = expressAsyncsHandler(async (req, res, next) => {
           as: "quantity",
           include: [{ model: Unit, as: "unit" }],
         },
-        { model: PostType, as: "postType", where: { name_en: postType } },
+        { model: PostType, as: "postType", where: { id: postTypeId } },
         { model: Category, as: "category" },
         { model: Location, as: "location" },
         { model: Image, as: "images" },

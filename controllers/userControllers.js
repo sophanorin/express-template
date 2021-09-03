@@ -168,6 +168,7 @@ exports.getUser = expressAsyncsHandler(async (req, res) => {
     _user.post_count = _user.posts.length;
     _user.posts = undefined;
     _user.avatarId = undefined;
+    _user.password = undefined;
     res.json(_user);
   } else res.status(404).send({ message: "User Not Found" });
 });
