@@ -22,14 +22,17 @@ const {
 } = require("../models");
 
 exports.signup = expressAsyncsHandler(async (req, res) => {
-  const { first_name, last_name, gender, phone_number, username, password } =
-    req.body;
+  const {
+    first_name,
+    last_name,
+    gender,
+    phone_number,
+    username,
+    password,
+    avatar,
+  } = req.body;
 
-  let cloudinary_res;
-  if (req.file)
-    cloudinary_res = await cloudinaryImageUploadMethod(req.file.path);
-
-  if (cloudinary_res) {
+  if (avatar) {
     User.create(
       {
         first_name,
@@ -37,7 +40,7 @@ exports.signup = expressAsyncsHandler(async (req, res) => {
         gender,
         phone_number,
         username,
-        avatar: cloudinary_res,
+        avatar: avatar,
         password: bcrypt.hashSync(password, 8),
       },
       { include: [{ model: Avatar, as: "avatar" }] }
@@ -113,6 +116,7 @@ exports.signin = expressAsyncsHandler(async (req, res) => {
         last_name: user.last_name,
         gender: user.gender,
         phone_number: user.phone_number,
+        username: user.username,
         avatar: user.avatar,
         token: generateToken(user),
         posts_count: user.posts.length,
@@ -175,34 +179,22 @@ exports.getUser = expressAsyncsHandler(async (req, res) => {
 
 exports.updateUser = expressAsyncsHandler(async (req, res) => {
   const { id } = req.params;
-  const { first_name, last_name, gender, phone_number } = req.body;
+  const { first_name, last_name, gender, phone_number, avatar } = req.body;
   const user = await User.findByPk(id, {
     include: { model: Avatar, as: "avatar" },
   });
 
   if (!user) res.status(404).send({ message: "User Not Found" });
   else {
-    let cloundinary_upload_res;
-    let cloudinary_destroy_res;
-    let avatar;
-    if (req.file) {
-      if (user.avatar?.publicId) {
-        cloudinary_destroy_res = await cloudinaryImageDestroyMethod(
-          user.avatar.publicId
-        );
-        cloundinary_upload_res = await cloudinaryImageUploadMethod(
-          req.file.path
-        );
-        user.avatar.update(cloundinary_upload_res);
-      } else {
-        cloundinary_upload_res = await cloudinaryImageUploadMethod(
-          req.file.path
-        );
-        avatar = await Avatar.create(cloundinary_upload_res);
+    if (!user.avatar && avatar) {
+      user.createAvatar(avatar);
+    }
 
-        user.setAvatar(avatar);
-      }
-    } else {
+    if (avatar && user.avatar.publicId !== avatar.publicId) {
+      user.createAvatar(avatar);
+    }
+
+    if (!avatar) {
       user.avatarId = null;
       user.avatar = null;
     }
@@ -212,14 +204,14 @@ exports.updateUser = expressAsyncsHandler(async (req, res) => {
     user.gender = gender;
     user.phone_number = phone_number;
 
-    user.save();
+    user.save().then((user) => console.log(user));
+    user.reload();
 
-    const new_user = { ...user.toJSON() };
-    if (!new_user.avatar) new_user.avatar = avatar || null;
-
-    if (!req.file) new_user.avatar = null;
-
-    res.json(new_user);
+    User.findByPk(id, {
+      include: { model: Avatar, as: "avatar" },
+    })
+      .then((user) => res.json(user))
+      .catch((err) => res.status(500).json({ message: err }));
   }
 });
 

@@ -13,7 +13,7 @@ module.exports = {
         first_name: {
           type: Sequelize.STRING,
           allowNull: false,
-          unique: true,
+          unique: false,
           validate: {
             notNull: { msg: "User must have a name" },
             notEmpty: { msg: "name must not be empty" },
@@ -22,7 +22,7 @@ module.exports = {
         last_name: {
           type: Sequelize.STRING,
           allowNull: false,
-          unique: true,
+          unique: false,
           validate: {
             notNull: { msg: "User must have a name" },
             notEmpty: { msg: "name must not be empty" },

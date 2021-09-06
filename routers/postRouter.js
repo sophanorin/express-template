@@ -5,12 +5,7 @@ const { isAuth } = require("../utils/utils");
 
 const postRouter = express.Router();
 
-postRouter.post(
-  "/insertPost",
-  isAuth,
-  upload.array("images", 4),
-  postControllers.insertPost
-);
+postRouter.post("/insertPost", isAuth, postControllers.insertPost);
 postRouter.put("/updatePost/:id", isAuth, postControllers.updatePost);
 postRouter.get("/getPosts/:postType?", postControllers.getPosts);
 postRouter.get("/getPost/:id", postControllers.getPostById);
