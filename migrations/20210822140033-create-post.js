@@ -15,6 +15,7 @@ module.exports = {
         },
         priceId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
           references: {
             model: "Prices",
             key: "id",
@@ -22,6 +23,7 @@ module.exports = {
         },
         userId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
           references: {
             model: "Users",
             key: "id",
@@ -29,6 +31,7 @@ module.exports = {
         },
         quantityId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
           references: {
             model: "Quantities",
             key: "id",
@@ -36,6 +39,7 @@ module.exports = {
         },
         categoryId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
           references: {
             model: "Categories",
             key: "id",
@@ -50,6 +54,7 @@ module.exports = {
         },
         postTypeId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
           references: {
             model: "PostTypes",
             key: "id",
