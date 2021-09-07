@@ -113,10 +113,13 @@ exports.insertPost = expressAsyncsHandler(async (req, res, next) => {
     images,
   } = req.body;
 
+  console.log("headers: ", req.headers);
+  console.log("body: ", req.body);
+
   Post.create(
     {
       description,
-      userId,
+      userId: userId || req.user.id,
       categoryId,
       postTypeId,
       price: {
