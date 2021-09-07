@@ -130,6 +130,9 @@ exports.signin = expressAsyncsHandler(async (req, res) => {
 exports.getUserPosts = expressAsyncsHandler(async (req, res) => {
   const { id } = req.params;
 
+  console.log("headers: ", req.headers);
+  console.log("body: ", req.body);
+
   if (id) {
     try {
       const posts = await Post.findAll({
