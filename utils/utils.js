@@ -19,6 +19,10 @@ const generateToken = (user) => {
 
 const isAuth = (req, res, next) => {
   const authorization = req.headers.authorization;
+
+  console.log("headers: ", req.headers);
+  console.log("body: ", req.body);
+
   if (authorization) {
     const token = authorization.slice(7, authorization.length);
     jwt.verify(
