@@ -41,7 +41,7 @@ Object.keys(db).forEach((modelName) => {
 });
 
 (async () => {
-  //await sequelize.sync({ force: true });
+  await sequelize.sync({ force: true });
   // await db.PostType.create({ name_en: "Sell", name_kh: "លក់" });
   // await db.PostType.create({ name_en: "Buy", name_kh: "ទិញ" });
   // await db.Unit.create({ name_en: "Tons", name_kh: "តោន" });
