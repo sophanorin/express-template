@@ -4,6 +4,8 @@ const { cloudinaryImageUploadMethod } = require("../utils/utils");
 exports.uploadImages = expressAsyncsHandler(async (req, res, next) => {
   let urls = [];
 
+  console.log("headers: ", req.headers);
+  console.log("body: ", req.body);
   console.log("Files: ", req.files);
 
   if (req.files.length === 0)
