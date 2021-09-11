@@ -28,5 +28,6 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
+  console.log("Enviroment: ", process.env.NODE_ENV);
   console.log(`Server at http://localhost:${PORT}`);
 });
